@@ -1,11 +1,11 @@
 package com.deflatedpickle.justcurrency.proxy;
 
+import com.deflatedpickle.justcurrency.events.ForgeEventHandler;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class ClientProxy implements CommonProxy{
     @Override
     public void init() {
+        MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
     }
 }
