@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "justcurrency",
+    "name": "JustCurrency",
+    "description": "A simple currency for Minecraft.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "updateUrl": "",
+    "authorList": ["DeflatedPickle"],
+    "credits": "DeflatedPickle",
+    "url": "https://github.com/DeflatedPickle/JustCurrency",
+    "logoFile": "logo.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
