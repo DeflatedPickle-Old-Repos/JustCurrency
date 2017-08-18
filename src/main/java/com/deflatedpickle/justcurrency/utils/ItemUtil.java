@@ -47,11 +47,15 @@ public class ItemUtil {
 
     protected static float determinItemValue(ItemStack stack) {
         // TODO: Improve automatic values.
+        Integer currentDamage = stack.getItemDamage();
+        Integer maxDamage = stack.getMaxDamage();
+
         Integer rarity = stack.getRarity().ordinal();
-        Integer enchantability = stack.isItemEnchantable() ? 1 : 0;
+        Integer enchantability = stack.isItemEnchantable() ? 25 : 0;
         Integer repair = stack.getRepairCost();
-        Integer enchanted = stack.isItemEnchanted() ? stack.getEnchantmentTagList().tagCount() : 0;
-        return rarity + enchantability + repair + enchanted;
+        Integer enchanted = stack.isItemEnchanted() ? stack.getEnchantmentTagList().tagCount() * 5 : 0;
+        
+        return rarity + enchantability + repair + enchanted + (maxDamage / 2) - (currentDamage / 4);
     }
 
     public static Float findMatch(ItemStack stack) {
