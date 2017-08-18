@@ -1,24 +1,20 @@
 package com.deflatedpickle.justcurrency.events;
 
+import com.deflatedpickle.justcurrency.configs.GeneralConfig;
+import com.deflatedpickle.justcurrency.utils.ItemUtil;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ForgeEventHandler {
     @SubscribeEvent
-    public void onItemTooltipEvent(ItemTooltipEvent event){
-        ItemStack itemStack = event.getItemStack();
-        Float value = 100.0F;
-        String form = (value <= 1) ? "singular" : "plural";
-        String colour = "§6";
+    public void onItemTooltipEvent(ItemTooltipEvent event) {
+        Float value = ItemUtil.findMatch(event.getItemStack());
 
-        event.getToolTip().add(colour + value + " " + I18n.format(String.format("tooltip.justcurrency.currency.%s", form)));
-        if (itemStack.getTagCompound() == null)
-        {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        itemStack.getTagCompound().setFloat("Value", value);
+        String form = GeneralConfig.configCurrency.usePlural ? (value <= 1) ? "singular" : "plural" : "singular";
+        TextFormatting colour = TextFormatting.getValueByName(GeneralConfig.configCurrency.currencyColour);
+
+        event.getToolTip().add("§6" + value + " " + I18n.format(String.format("tooltip.justcurrency.currency.%s", form)));
     }
 }
