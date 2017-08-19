@@ -2,7 +2,10 @@ package com.deflatedpickle.justcurrency.utils;
 
 import com.deflatedpickle.justcurrency.JustCurrency;
 import com.google.common.base.Equivalence;
+import net.minecraft.block.Block;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -11,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 public class ItemUtil {
-    protected static final Equivalence<ItemStack> EQV = new Equivalence<ItemStack>() {
+    private static final Equivalence<ItemStack> EQV = new Equivalence<ItemStack>() {
         @Override
         protected boolean doEquivalent(@Nonnull ItemStack a, @Nonnull ItemStack b) {
             return ItemStack.areItemStackShareTagsEqual(a, b);
@@ -45,8 +48,10 @@ public class ItemUtil {
         }
     }
 
-    protected static float determinItemValue(ItemStack stack) {
+    private static float determinItemValue(ItemStack stack) {
         // TODO: Improve automatic values.
+        // TODO: Also have the damage and size of the specific stack be accounted for in the value.
+        // TODO: Use recipes for crafted item values.
         Integer currentDamage = stack.getItemDamage();
         Integer maxDamage = stack.getMaxDamage();
 
@@ -54,8 +59,20 @@ public class ItemUtil {
         Integer enchantability = stack.isItemEnchantable() ? 25 : 0;
         Integer repair = stack.getRepairCost();
         Integer enchanted = stack.isItemEnchanted() ? stack.getEnchantmentTagList().tagCount() * 5 : 0;
-        
-        return rarity + enchantability + repair + enchanted + (maxDamage / 2) - (currentDamage / 4);
+
+        Integer itemHalf = rarity + enchantability + repair + enchanted + (maxDamage / 2) - (currentDamage / 4);
+        Integer blockHalf = 0;
+        if (stack.getItem() instanceof ItemBlock) {
+            Block stackBlock = Block.getBlockFromItem(stack.getItem());
+
+            Integer harvestLevel = stackBlock.getHarvestLevel(stackBlock.getStateFromMeta(stack.getMetadata()));
+            Float explosionResistance = stackBlock.getExplosionResistance(null);
+            Integer lightLevel = stackBlock.getLightValue(stackBlock.getStateFromMeta(stack.getMetadata()));
+
+            blockHalf += harvestLevel + explosionResistance.intValue() + (lightLevel / 2);
+        }
+
+        return itemHalf + blockHalf;
     }
 
     public static Float findMatch(ItemStack stack) {
